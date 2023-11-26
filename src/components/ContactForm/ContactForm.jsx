@@ -1,62 +1,60 @@
-import { Component } from 'react';
 import { nanoid } from 'nanoid';
-
+import { useState } from 'react';
 import { Form } from './ContactForm.styled';
 
-export class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+export const ContactForm = ({ onSubmitForm }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-  submitForm = e => {
+  const submitForm = e => {
     e.preventDefault();
-    this.props.onSubmitForm(this.state);
-    this.reset();
+    onSubmitForm({ name: name, number: number });
+    setName('');
+    setNumber('');
   };
 
-  reset = () => {
-    this.setState({ name: '', number: '' });
+  const changeInput = input => {
+    switch (input.name) {
+      case 'name':
+        setName(input.value);
+        break;
+      case 'number':
+        setNumber(input.value);
+        break;
+      default:
+    }
   };
 
-  changeInput = input => {
-    this.setState({
-      [input.name]: input.value,
-    });
-  };
+  const inputNameId = nanoid(5);
+  const inputNumberId = nanoid(5);
 
-  nameIinputIid = nanoid(5);
-  numberInputIid = nanoid(5);
-
-  render() {
-    return (
-      <Form onSubmit={this.submitForm}>
-        <label htmlFor={this.nameIinputIid}>Name</label>
-        <input
-          type="text"
-          id={this.nameIinputIid}
-          name="name"
-          placeholder="Enter name ..."
-          onChange={e => {
-            return this.changeInput(e.target);
-          }}
-          value={this.state.name}
-          required
-        />
-        <label>Number</label>
-        <input
-          type="tel"
-          id={this.numberInputIid}
-          name="number"
-          placeholder="XXX-XX-XX"
-          onChange={e => {
-            return this.changeInput(e.target);
-          }}
-          value={this.state.number}
-          required
-        />
-        <button type="submit">Add contatct</button>
-      </Form>
-    );
-  }
-}
+  return (
+    <Form onSubmit={submitForm}>
+      <label htmlFor={inputNameId}>Name</label>
+      <input
+        type="text"
+        id={inputNameId}
+        name="name"
+        placeholder="Enter name ..."
+        onChange={e => {
+          return changeInput(e.target);
+        }}
+        value={name}
+        required
+      />
+      <label>Number</label>
+      <input
+        type="tel"
+        id={inputNumberId}
+        name="number"
+        placeholder="XXX-XX-XX"
+        onChange={e => {
+          return changeInput(e.target);
+        }}
+        value={number}
+        required
+      />
+      <button type="submit">Add contatct</button>
+    </Form>
+  );
+};
